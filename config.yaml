@@ -1,0 +1,107 @@
+seed: 42
+
+data:
+  dataset: tblard/allocine
+  split: train
+  sample_size: 20000
+  dev_sample_size: 5000
+  min_tokens: 5
+
+preprocessing:
+  remove_person_entities: false  
+  remove_sentiment_words: true
+  spacy_model: fr_core_news_sm
+  batch_size: 64
+  extra_stopwords: [film, cinéma, voir, faire, être, avoir, aller, passer, mettre, vouloir,
+                    pouvoir, falloir, prendre, trouver, dire, chose, fois, moment, vraiment,
+                    beaucoup, trop, plus, bref, ici, savoir, regarder,
+                    luire]
+  sentiment_words: [bien, bon, mal, mauvais, excellent, magnifique, superbe, meilleur, pire,
+                    beau, bel, grand, petit, nul, génial, navet, parfaitement, dommage,
+                    malheureusement, rien, aucun, non, jamais]
+  min_tokens: 5
+  batch_size: 64
+
+embedding:
+  model: intfloat/multilingual-e5-large-instruct
+  prefix: "Instruct: Identify the genre and subject of the movie discussed in this review\nQuery: "
+  max_seq_length: 512
+  batch_size: 32
+  device: auto
+  control:
+    model: paraphrase-multilingual-MiniLM-L12-v2
+    prefix: ""
+    max_seq_length: 128
+
+
+umap:
+  n_neighbors: 15
+  n_components: 5
+  min_dist: 0.0
+  metric: cosine
+
+hdbscan:
+  min_cluster_size: 100
+  min_samples: 1
+  cluster_selection_method: eom
+
+bertopic:
+  ngram_range: [1, 2]
+  min_df: 1
+  dedupe_tokens: true
+  reduce_frequent_words: true
+  representation: mmr
+  mmr_diversity: 0.3
+  top_n_words: 25
+  target_nr_topics: 30
+  max_outlier_ratio: 0.30
+  outlier_strategy: embeddings
+  outlier_threshold: 0.0
+
+lda:
+  no_below: 10
+  no_above: 0.5
+  passes: 10
+  iterations: 100
+  chunksize: 2000
+  alpha: auto
+  eta: auto
+  k_grid: [10, 15, 20, 25, 30]
+
+evaluation:
+  top_n_words: 10
+  diversity_top_n: 25
+
+sentiment:
+  alpha: 0.05
+  n_examples: 3
+  n_class_words: 8
+
+labeling:
+  provider: gemini
+  model: gemini-3.1-flash-lite
+  api_key_env: GEMINI_API_KEY
+  n_representative_docs: 3
+  n_keywords: 10
+  max_review_chars: 600
+  temperature: 0.2
+  sleep_seconds: 4
+  timeout_seconds: 60
+  max_retries: 4
+
+app:
+  min_words: 5
+  n_similar: 5
+  n_top_topics: 3
+
+hub:
+  user: Dalfaxy
+  model_repo: critiscope-bertopic
+  space: critiscope
+
+paths:
+  raw: data/raw
+  processed: data/processed
+  models: models
+  outputs: outputs
+  artifacts: artifacts

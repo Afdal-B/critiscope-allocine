@@ -1,0 +1,50 @@
+[project]
+name = "critiscope-allocine"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "bertopic>=0.17.4",
+    "datasets>=5.0.1",
+    "fr-core-news-sm",
+    "gensim>=4.4.0",
+    "google-genai>=2.25.0",
+    "hdbscan>=0.8.44",
+    "matplotlib>=3.11.2",
+    "numpy>=2.5.3",
+    "pandas>=3.0.6",
+    "plotly>=7.1.0",
+    "pyarrow>=25.0.1",
+    "python-dotenv>=1.2.3",
+    "pyyaml>=6.0.3",
+    "scikit-learn>=1.9.1",
+    "sentence-transformers>=6.1.0",
+    "spacy>=3.8.16",
+    "streamlit>=1.64.0",
+    "umap-learn>=0.5.12",
+]
+
+[tool.uv.sources]
+fr-core-news-sm = { url = "https://github.com/explosion/spacy-models/releases/download/fr_core_news_sm-3.8.0/fr_core_news_sm-3.8.0-py3-none-any.whl" }
+
+[dependency-groups]
+dev = [
+    "ipykernel>=7.3.0",
+    "ipywidgets>=8.1.9",
+    "nbformat>=5.11.1",
+    "pytest>=9.1.1",
+    "ruff>=0.16.8",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+
+[tool.ruff.lint.per-file-ignores]
+"*.ipynb" = ["E402", "E741", "B023", "I001"]
