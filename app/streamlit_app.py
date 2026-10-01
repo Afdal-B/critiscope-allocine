@@ -5,14 +5,16 @@ import utils
 
 st.set_page_config(page_title="CritiScope", page_icon="🎬", layout="centered")
 
-EXAMPLES = {
-    "Horreur": "Un film d'horreur vraiment efficace, l'ambiance est pesante et le final m'a glacé "
-    "le sang. À voir pour les amateurs du genre.",
-    "Animation": "Un dessin animé magnifique pour petits et grands, les personnages sont "
-    "attachants et l'animation est superbe.",
-    "Western": "Un western à l'ancienne avec de grands espaces, des duels au soleil et un shérif "
-    "inoubliable.",
-}
+EXAMPLES = [
+    "Ennuyeux à souhait. Les zombies sont très stupides, les survivants encore plus ... Encore "
+    "un film de zombies bas de gamme !",
+    "Très grand western spaghetti, avec excelent casting, Lee Van Cleef toujours aussi "
+    "remarquable, et une belle musique de Riz Ortolani.",
+    "l'histoire de deux enfants juifs confrontés à l'antisémitisme durant la seconde guerre "
+    "mondiale,un film émouvant avec des moments forts,la reconstitution de cette époque est "
+    "parfaite mais l'atout principal est l'interprétation de qualité avec en tête les deux "
+    "frères qui sont formidables",
+]
 
 
 @st.cache_resource(show_spinner="Chargement des données…")
@@ -34,6 +36,15 @@ def show_review(text: str, label: int, max_chars: int = 300) -> None:
     badge = ":blue-badge[positive]" if label == 1 else ":red-badge[négative]"
     short = text if len(text) <= max_chars else text[:max_chars].rsplit(" ", 1)[0] + " […]"
     st.markdown(f"{badge} {short}")
+
+
+def use_example(text: str) -> None:
+    st.session_state.review = text
+    st.session_state.run = True
+
+
+def request_run() -> None:
+    st.session_state.run = True
 
 
 def fr_int(n: int) -> str:
@@ -62,14 +73,29 @@ tab_test, tab_sentiment, tab_topics = st.tabs(
 )
 
 with tab_test:
-    example = st.pills("Exemples", list(EXAMPLES), label_visibility="collapsed")
-    text = st.text_area(
+    st.markdown(
+        "Essayez avec une critique Allociné que le modèle n'a jamais vue, ou écrivez la vôtre."
+    )
+    for col, example in zip(st.columns(len(EXAMPLES)), EXAMPLES, strict=True):
+        with col.container(border=True, height="stretch"):
+            st.caption(f"« {example} »")
+            st.button(
+                "Analyser",
+                key=f"example_{EXAMPLES.index(example)}",
+                on_click=use_example,
+                args=(example,),
+                width="stretch",
+            )
+    st.session_state.setdefault("review", "")
+    st.text_area(
         "Votre critique",
-        value=EXAMPLES.get(example, ""),
+        key="review",
         height=120,
         placeholder="Écrivez une critique de film en français…",
     )
-    if st.button("Trouver le thème", type="primary"):
+    st.button("Trouver le thème", type="primary", on_click=request_run)
+    if st.session_state.pop("run", False):
+        text = st.session_state.review
         app_cfg = data.summary["app"]
         if len(text.split()) < app_cfg["min_words"]:
             st.warning(f"Écrivez au moins {app_cfg['min_words']} mots.")

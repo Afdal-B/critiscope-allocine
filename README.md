@@ -14,7 +14,7 @@
 
 Quels sujets reviennent dans les critiques de films Allociné, et lesquels sont les mieux notés ?
 
-**[Démo en ligne](LIEN_DE_LA_DEMO)** · [Modèle et artefacts sur Hugging Face](https://huggingface.co/Dalfaxy/critiscope-bertopic)
+**[Démo en ligne](https://critiscope-allocine.streamlit.app/)** · [Modèle et artefacts sur Hugging Face](https://huggingface.co/Dalfaxy/critiscope-bertopic)
 
 ![Aperçu de l'application CritiScope](docs/demo.png)
 
