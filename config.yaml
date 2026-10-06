@@ -97,7 +97,7 @@ app:
 hub:
   user: Dalfaxy
   model_repo: critiscope-bertopic
-  space: critiscope
+  github: https://github.com/Afdal-B/critiscope-allocine
 
 paths:
   raw: data/raw
